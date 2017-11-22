@@ -33,6 +33,14 @@ USEMODULE += shell_commands
 USEMODULE += ps
 # include and auto-initialize all available sensors
 USEMODULE += saul_default
+USEMODULE += cc110x
+USEMODULE += gnrc_netdev_default
+USEMODULE += auto_init_gnrc_netif
+USEMODULE += posix_sockets
+USEMODULE += gnrc_ipv6_default
+USEMODULE += gnrc_udp
+USEMODULE += gnrc_sock_udp
+USEMODULE += posix_time
 
 BOARD_PROVIDES_NETIF := airfy-beacon cc2538dk fox iotlab-m3 iotlab-a8-m3 mulle \
         microbit native nrf51dongle nrf52dk nrf6310 openmote-cc2538 pba-d-01-kw2x \
