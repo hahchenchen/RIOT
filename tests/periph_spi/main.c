@@ -35,7 +35,7 @@
 #define BENCH_SMALL             (2)
 #define BENCH_LARGE             (100)
 #define BENCH_PAYLOAD           ('b')
-#define BENCH_REGADDR           (0x23)
+#define BENCH_REGADDR           (0x2b)
 
 #define BUF_SIZE                (512U)
 
@@ -43,7 +43,7 @@
  * @brief   Benchmark buffers
  */
 static uint8_t bench_wbuf[BENCH_LARGE];
-static uint8_t bench_rbuf[BENCH_LARGE];
+//static uint8_t bench_rbuf[BENCH_LARGE];
 
 /**
  * @brief   Generic buffer used for receiving
@@ -224,8 +224,8 @@ int cmd_bench(int argc, char **argv)
 
     uint32_t start, stop;
     uint32_t sum = 0;
-    uint8_t in;
-    uint8_t out = (uint8_t)BENCH_PAYLOAD;
+  //  uint8_t in;
+   // uint8_t out = (uint8_t)BENCH_PAYLOAD;
 
     if (spiconf.dev == SPI_UNDEF) {
         puts("error: SPI is not initialized, please initialize bus first");
@@ -244,157 +244,15 @@ int cmd_bench(int argc, char **argv)
 
     puts("### Running some benchmarks, all values in [us] ###\n");
 
-    /* 1 - write 1000 times 1 byte */
-    start = xtimer_now_usec();
-    for (int i = 0; i < BENCH_REDOS; i++) {
-        in = spi_transfer_byte(spiconf.dev, spiconf.cs, false, out);
-        (void)in;
-    }
-    stop = xtimer_now_usec();
-    printf(" 1 - write %i times %i byte:", BENCH_REDOS, 1);
-    printf("\t\t\t%i\n", (int)(stop - start));
-    sum += (stop - start);
-
-    /* 2 - write 1000 times 2 byte */
-    start = xtimer_now_usec();
-    for (int i = 0; i < BENCH_REDOS; i++) {
-        spi_transfer_bytes(spiconf.dev, spiconf.cs, false,
-                           bench_wbuf, NULL, BENCH_SMALL);
-    }
-    stop = xtimer_now_usec();
-    printf(" 2 - write %i times %i byte:", BENCH_REDOS, BENCH_SMALL);
-    printf("\t\t\t%i\n", (int)(stop - start));
-    sum += (stop - start);
-
-    /* 3 - write 1000 times 100 byte */
-    start = xtimer_now_usec();
-    for (int i = 0; i < BENCH_REDOS; i++) {
-        spi_transfer_bytes(spiconf.dev, spiconf.cs, false,
-                           bench_wbuf, NULL, BENCH_LARGE);
-    }
-    stop = xtimer_now_usec();
-    printf(" 3 - write %i times %i byte:", BENCH_REDOS, BENCH_LARGE);
-    printf("\t\t%i\n", (int)(stop - start));
-    sum += (stop - start);
-
-    /* 4 - write 1000 times 1 byte to register */
-    start = xtimer_now_usec();
-    for (int i = 0; i < BENCH_REDOS; i++) {
-        in = spi_transfer_reg(spiconf.dev, spiconf.cs, BENCH_REGADDR, out);
-        (void)in;
-    }
-    stop = xtimer_now_usec();
-    printf(" 4 - write %i times %i byte to register:", BENCH_REDOS, 1);
-    printf("\t%i\n", (int)(stop - start));
-    sum += (stop - start);
-
-    /* 5 - write 1000 times 2 byte to register */
-    start = xtimer_now_usec();
-    for (int i = 0; i < BENCH_REDOS; i++) {
-        spi_transfer_regs(spiconf.dev, spiconf.cs, BENCH_REGADDR,
-                          bench_wbuf, NULL, BENCH_SMALL);
-    }
-    stop = xtimer_now_usec();
-    printf(" 5 - write %i times %i byte to register:", BENCH_REDOS, BENCH_SMALL);
-    printf("\t%i\n", (int)(stop - start));
-    sum += (stop - start);
-
-    /* 6 - write 1000 times 100 byte to register */
-    start = xtimer_now_usec();
-    for (int i = 0; i < BENCH_REDOS; i++) {
-        spi_transfer_regs(spiconf.dev, spiconf.cs, BENCH_REGADDR,
-                          bench_wbuf, NULL, BENCH_LARGE);
-    }
-    stop = xtimer_now_usec();
-    printf(" 6 - write %i times %i byte to register:", BENCH_REDOS, BENCH_LARGE);
-    printf("\t%i\n", (int)(stop - start));
-    sum += (stop - start);
-
-    /* 7 - read 1000 times 2 byte */
-    start = xtimer_now_usec();
-    for (int i = 0; i < BENCH_REDOS; i++) {
-        spi_transfer_bytes(spiconf.dev, spiconf.cs, false,
-                           NULL, bench_rbuf, BENCH_SMALL);
-    }
-    stop = xtimer_now_usec();
-    printf(" 7 - read %i times %i byte:", BENCH_REDOS, BENCH_SMALL);
-    printf("\t\t\t%i\n", (int)(stop - start));
-    sum += (stop - start);
-
-    /* 8 - read 1000 times 100 byte */
-    start = xtimer_now_usec();
-    for (int i = 0; i < BENCH_REDOS; i++) {
-        spi_transfer_bytes(spiconf.dev, spiconf.cs, false,
-                           NULL, bench_rbuf, BENCH_LARGE);
-    }
-    stop = xtimer_now_usec();
-    printf(" 8 - read %i times %i byte:", BENCH_REDOS, BENCH_LARGE);
-    printf("\t\t\t%i\n", (int)(stop - start));
-    sum += (stop - start);
 
     /* 9 - read 1000 times 2 byte from register */
     start = xtimer_now_usec();
     for (int i = 0; i < BENCH_REDOS; i++) {
-        spi_transfer_regs(spiconf.dev, spiconf.cs, BENCH_REGADDR,
-                          NULL, bench_rbuf, BENCH_SMALL);
+        printf("%x\n",spi_transfer_reg(spiconf.dev, spiconf.cs, BENCH_REGADDR | 0xc0,
+                          0xff));
     }
     stop = xtimer_now_usec();
     printf(" 9 - read %i times %i byte from register:", BENCH_REDOS, BENCH_SMALL);
-    printf("\t%i\n", (int)(stop - start));
-    sum += (stop - start);
-
-    /* 10 - read 1000 times 100 byte from register */
-    start = xtimer_now_usec();
-    for (int i = 0; i < BENCH_REDOS; i++) {
-        spi_transfer_regs(spiconf.dev, spiconf.cs, BENCH_REGADDR,
-                          NULL, bench_rbuf, BENCH_LARGE);
-    }
-    stop = xtimer_now_usec();
-    printf("10 - read %i times %i byte from register:", BENCH_REDOS, BENCH_LARGE);
-    printf("\t%i\n", (int)(stop - start));
-    sum += (stop - start);
-
-    /* 11 - transfer 1000 times 2 byte */
-    start = xtimer_now_usec();
-    for (int i = 0; i < BENCH_REDOS; i++) {
-        spi_transfer_bytes(spiconf.dev, spiconf.cs, false,
-                           bench_wbuf, bench_rbuf, BENCH_SMALL);
-    }
-    stop = xtimer_now_usec();
-    printf("11 - transfer %i times %i byte:", BENCH_REDOS, BENCH_SMALL);
-    printf("\t\t%i\n", (int)(stop - start));
-    sum += (stop - start);
-
-    /* 12 - transfer 1000 times 100 byte */
-    start = xtimer_now_usec();
-    for (int i = 0; i < BENCH_REDOS; i++) {
-        spi_transfer_bytes(spiconf.dev, spiconf.cs, false,
-                           bench_wbuf, bench_rbuf, BENCH_LARGE);
-    }
-    stop = xtimer_now_usec();
-    printf("12 - transfer %i times %i byte:", BENCH_REDOS, BENCH_LARGE);
-    printf("\t\t%i\n", (int)(stop - start));
-    sum += (stop - start);
-
-    /* 13 - transfer 1000 times 2 byte from/to register */
-    start = xtimer_now_usec();
-    for (int i = 0; i < BENCH_REDOS; i++) {
-        spi_transfer_regs(spiconf.dev, spiconf.cs, BENCH_REGADDR,
-                          bench_wbuf, bench_rbuf, BENCH_SMALL);
-    }
-    stop = xtimer_now_usec();
-    printf("13 - transfer %i times %i byte to register:", BENCH_REDOS, BENCH_SMALL);
-    printf("\t%i\n", (int)(stop - start));
-    sum += (stop - start);
-
-    /* 14 - transfer 1000 times 100 byte from/to register */
-    start = xtimer_now_usec();
-    for (int i = 0; i < BENCH_REDOS; i++) {
-        spi_transfer_regs(spiconf.dev, spiconf.cs, BENCH_REGADDR,
-                          bench_wbuf, bench_rbuf, BENCH_LARGE);
-    }
-    stop = xtimer_now_usec();
-    printf("14 - transfer %i times %i byte to register:", BENCH_REDOS, BENCH_LARGE);
     printf("\t%i\n", (int)(stop - start));
     sum += (stop - start);
 

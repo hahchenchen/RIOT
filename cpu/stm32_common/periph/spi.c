@@ -30,6 +30,8 @@
 #include "mutex.h"
 #include "assert.h"
 #include "periph/spi.h"
+#include "board.h"
+#include "periph/gpio.h"
 
 /**
  * @brief   Number of bits to shift the BR value in the CR1 register
@@ -47,7 +49,8 @@ static inline SPI_TypeDef *dev(spi_t bus)
 }
 
 void spi_init(spi_t bus)
-{
+{gpio_init(LED1_PIN, GPIO_OUT);
+    gpio_set(LED1_PIN);
     assert(bus < SPI_NUMOF);
 
     /* initialize device lock */
@@ -87,7 +90,7 @@ void spi_init_pins(spi_t bus)
 }
 
 int spi_init_cs(spi_t bus, spi_cs_t cs)
-{
+{printf("spi_init_cs\n");
     if (bus >= SPI_NUMOF) {
         return SPI_NODEV;
     }
@@ -115,7 +118,7 @@ int spi_init_cs(spi_t bus, spi_cs_t cs)
     return SPI_OK;
 }
 
-int spi_acquire(spi_t bus, spi_cs_t cs, spi_mode_t mode, spi_clk_t clk)
+int     spi_acquire(spi_t bus, spi_cs_t cs, spi_mode_t mode, spi_clk_t clk)
 {
     assert((clk >= SPI_CLK_100KHZ) && (clk <= SPI_CLK_10MHZ));
 
@@ -132,7 +135,7 @@ int spi_acquire(spi_t bus, spi_cs_t cs, spi_mode_t mode, spi_clk_t clk)
     else {
         dev(bus)->CR2 |= (SPI_CR2_SSOE);
     }
-
+ gpio_clear((gpio_t)cs);
     return SPI_OK;
 }
 
@@ -189,7 +192,8 @@ void spi_transfer_bytes(spi_t bus, spi_cs_t cs, bool cont,
             while (!(dev(bus)->SR & SPI_SR_TXE));
             *DR = outbuf[i];
             while (!(dev(bus)->SR & SPI_SR_RXNE));
-            inbuf[i] = *DR;
+                inbuf[i] = *DR;
+            
         }
     }
 

@@ -30,7 +30,7 @@ const cc110x_params_t cc110x_params[] = {
     {
         .spi  = 0,
         .cs   = GPIO_PIN(PORT_G, 0),
-        .gdo0 = 27,
+        .gdo0 = GPIO_PIN(PORT_D, 0),
         .gdo1 = GPIO_PIN(PORT_A, 6),
         .gdo2 = GPIO_PIN(PORT_G, 1)
     },

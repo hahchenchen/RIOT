@@ -35,7 +35,7 @@
 #include "xtimer.h"
 #include "irq.h"
 
-#define SPI_CLK         SPI_CLK_5MHZ
+#define SPI_CLK         SPI_CLK_10MHZ
 #define SPI_MODE        SPI_MODE_0
 
 /**********************************************************************
@@ -133,6 +133,7 @@ uint8_t cc110x_read_reg(cc110x_t *dev, uint8_t addr)
     cc110x_cs(dev);
     result = spi_transfer_reg(dev->params.spi, SPI_CS_UNDEF,
                               (addr | CC110X_READ_SINGLE), CC110X_NOBYTE);
+
     gpio_set(dev->params.cs);
     irq_restore(cpsr);
     spi_release(dev->params.spi);

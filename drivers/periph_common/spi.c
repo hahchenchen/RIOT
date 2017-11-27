@@ -56,6 +56,7 @@ uint8_t spi_transfer_byte(spi_t bus, spi_cs_t cs, bool cont, uint8_t out)
 #ifdef PERIPH_SPI_NEEDS_TRANSFER_REG
 uint8_t spi_transfer_reg(spi_t bus, spi_cs_t cs, uint8_t reg, uint8_t out)
 {
+   
     spi_transfer_bytes(bus, cs, true, &reg, NULL, 1);
     return spi_transfer_byte(bus, cs, false, out);
 }
