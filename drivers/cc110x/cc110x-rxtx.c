@@ -40,7 +40,7 @@
 
 #include "log.h"
 
-#define ENABLE_DEBUG (1)
+#define ENABLE_DEBUG (0)
 #include "debug.h"
 
 static void _rx_abort(cc110x_t *dev)
@@ -120,7 +120,7 @@ static void _rx_read_data(cc110x_t *dev, void(*callback)(void*), void*arg)
         int crc_ok = (status[I_LQI] & CRC_OK) >> 7;
 
         if (crc_ok) {
-                    LOG_DEBUG("cc110x: received packet from=%u to=%u payload "
+                   printf("cc110x: received packet from=%u to=%u payload "
                             "len=%u\n",
                     (unsigned)pkt_buf->packet.phy_src,
                     (unsigned)pkt_buf->packet.address,
@@ -275,7 +275,6 @@ int cc110x_send(cc110x_t *dev, cc110x_pkt_t *packet)
 #ifdef MODULE_CC110X_HOOKS
     cc110x_hook_tx();
 #endif
-printf("CC110X_VERSION:%x\n",cc110x_read_status(dev,0x29));
 
     cc110x_write_reg(dev, CC110X_IOCFG2, 0x02);
     /* Put CC110x in IDLE mode to flush the FIFO */

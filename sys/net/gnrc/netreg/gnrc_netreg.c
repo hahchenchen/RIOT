@@ -48,11 +48,10 @@ int gnrc_netreg_register(gnrc_nettype_t type, gnrc_netreg_entry_t *entry)
     /* only threads with a message queue are allowed to register at gnrc */
     assert(sched_threads[entry->target.pid]->msg_array);
 #endif
-
+printf("gnrc_netreg_register:type:%d\n",type);
     if (_INVALID_TYPE(type)) {
         return -EINVAL;
     }
-
     LL_PREPEND(netreg[type], entry);
 
     return 0;
@@ -88,9 +87,8 @@ int gnrc_netreg_num(gnrc_nettype_t type, uint32_t demux_ctx)
     if (_INVALID_TYPE(type)) {
         return 0;
     }
-
+printf("gnrc_netreg_num:type%d\n",type);
     entry = netreg[type];
-
     while (entry != NULL) {
         if (entry->demux_ctx == demux_ctx) {
             num++;
@@ -98,7 +96,7 @@ int gnrc_netreg_num(gnrc_nettype_t type, uint32_t demux_ctx)
 
         entry = entry->next;
     }
-
+printf("num%d\n",num);
     return num;
 }
 

@@ -90,7 +90,7 @@ void spi_init_pins(spi_t bus)
 }
 
 int spi_init_cs(spi_t bus, spi_cs_t cs)
-{printf("spi_init_cs\n");
+{
     if (bus >= SPI_NUMOF) {
         return SPI_NODEV;
     }

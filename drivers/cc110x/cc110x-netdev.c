@@ -33,7 +33,7 @@
 #include "net/netdev.h"
 #include "net/gnrc/nettype.h"
 
-#define ENABLE_DEBUG    (1)
+#define ENABLE_DEBUG    (0)
 #include "debug.h"
 
 static int _send(netdev_t *dev, const struct iovec *vector, unsigned count)
@@ -224,7 +224,9 @@ int netdev_cc110x_setup(netdev_cc110x_t *netdev_cc110x, const cc110x_params_t *p
 #ifdef MODULE_GNRC_NETIF
 # ifdef MODULE_GNRC_SIXLOWPAN
     netdev_cc110x->cc110x.proto = GNRC_NETTYPE_SIXLOWPAN;
-# else
+# elif defined MODULE_CCN_LITE
+    netdev_cc110x->cc110x.proto = GNRC_NETTYPE_CCN;
+#else
     netdev_cc110x->cc110x.proto = GNRC_NETTYPE_UNDEF;
 # endif
 #endif

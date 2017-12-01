@@ -17,7 +17,7 @@
 #include "net/gnrc/netdev.h"
 #include "od.h"
 
-#define ENABLE_DEBUG    (0)
+#define ENABLE_DEBUG    (1)
 #include "debug.h"
 
 static int _send(gnrc_netdev_t *gnrc_netdev, gnrc_pktsnip_t *pkt)
@@ -48,23 +48,36 @@ static int _send(gnrc_netdev_t *gnrc_netdev, gnrc_pktsnip_t *pkt)
         uint8_t *_src_addr = gnrc_netif_hdr_get_src_addr(netif_hdr);
         cc110x_pkt.phy_src = *_src_addr;
     }
-    else {
+    else {printf("cc110x->radio_address:%x\n",cc110x->radio_address );
+    printf("%d\n",netif_hdr->src_l2addr_len );
         cc110x_pkt.phy_src = cc110x->radio_address;
     }
 
     if (netif_hdr->flags & (GNRC_NETIF_HDR_FLAGS_BROADCAST |
                 GNRC_NETIF_HDR_FLAGS_MULTICAST)) {
         cc110x_pkt.address = 0;
+    printf("cc110x_pkt.address = 0;\n");
     }
     else {
         uint8_t *_dst_addr = gnrc_netif_hdr_get_dst_addr(netif_hdr);
         cc110x_pkt.address = _dst_addr[netif_hdr->dst_l2addr_len-1];
+        printf("cc110x_pkt.address:%x\n",cc110x_pkt.address );
     }
 
     switch (payload->type) {
 #ifdef MODULE_GNRC_SIXLOWPAN
         case GNRC_NETTYPE_SIXLOWPAN:
             cc110x_pkt.flags = 1;
+            break;
+#endif
+#ifdef MODULE_CCN_LITE
+        case GNRC_NETTYPE_CCN:
+        printf("GNRC_NETTYPE_CCN\n");
+            cc110x_pkt.flags = 1;
+            break;
+        case GNRC_NETTYPE_CCN_CHUNK:
+        printf("GNRC_NETTYPE_CCN_CHUNK\n");
+            cc110x_pkt.flags = 2;
             break;
 #endif
         default:
@@ -119,11 +132,24 @@ static gnrc_pktsnip_t *_recv(gnrc_netdev_t *gnrc_netdev)
     int nettype;
 
     int addr_len;
+
     switch (cc110x_pkt->flags) {
 #ifdef MODULE_GNRC_SIXLOWPAN
         case 1:
             addr_len = 8;
             nettype = GNRC_NETTYPE_SIXLOWPAN;
+            break;
+#endif
+#ifdef MODULE_CCN_LITE
+        case 1:
+        printf("case 1\n");
+            addr_len = 1;
+            nettype = GNRC_NETTYPE_CCN;
+            break;
+        case 2:
+        printf("case 2:\n");
+            addr_len = 1;
+            nettype = GNRC_NETTYPE_CCN_CHUNK;
             break;
 #endif
         default:
@@ -160,6 +186,7 @@ static gnrc_pktsnip_t *_recv(gnrc_netdev_t *gnrc_netdev)
         gnrc_netif_hdr_set_dst_addr(netif_hdr->data, (uint8_t*)&dst_addr, addr_len);
     }
     else {
+        printf("phy_src:%x,address:%x\n",cc110x_pkt->phy_src,cc110x_pkt->address );
         gnrc_netif_hdr_set_src_addr(netif_hdr->data, (uint8_t*)&cc110x_pkt->phy_src, addr_len);
         gnrc_netif_hdr_set_dst_addr(netif_hdr->data, (uint8_t*)&cc110x_pkt->address, addr_len);
     }

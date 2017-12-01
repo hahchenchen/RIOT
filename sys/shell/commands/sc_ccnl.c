@@ -26,7 +26,7 @@
 
 #define BUF_SIZE (64)
 
-#define MAX_ADDR_LEN            (8U)
+#define MAX_ADDR_LEN            (1U)
 
 static unsigned char _int_buf[BUF_SIZE];
 static unsigned char _cont_buf[BUF_SIZE];
@@ -143,7 +143,7 @@ static struct ccnl_face_s *_intern_face_get(char *addr_str)
     uint8_t relay_addr[MAX_ADDR_LEN];
     memset(relay_addr, UINT8_MAX, MAX_ADDR_LEN);
     size_t addr_len = gnrc_netif_addr_from_str(relay_addr, sizeof(relay_addr), addr_str);
-
+printf("addr_len:%d\n",addr_len );
     if (addr_len == 0) {
         printf("Error: %s is not a valid link layer address\n", addr_str);
         return NULL;

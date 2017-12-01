@@ -23,6 +23,7 @@
 
 #include <string.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "net/gnrc/pkt.h"
 #include "net/gnrc/pktbuf.h"
@@ -144,6 +145,7 @@ static inline void gnrc_netif_hdr_set_src_addr(gnrc_netif_hdr_t *hdr, uint8_t *a
         uint8_t addr_len)
 {
     if (addr_len != hdr->src_l2addr_len) {
+        printf("addr_len != hdr->src_l2addr_len\n");
         return;
     }
 

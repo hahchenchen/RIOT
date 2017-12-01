@@ -9,7 +9,7 @@
 #include "event/callback.h"
 
 void _event_callback_handler(event_t *event)
-{
+{printf("_event_callback_handler\n");
     event_callback_t *event_callback = (event_callback_t *) event;
     event_callback->callback(event_callback->arg);
 }

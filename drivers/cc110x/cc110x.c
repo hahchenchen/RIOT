@@ -35,7 +35,7 @@
 #include "cc110x-internal.h"
 #include "cc110x-spi.h"
 
-#define ENABLE_DEBUG    (1)
+#define ENABLE_DEBUG    (0)
 #include "debug.h"
 
 /* Internal function prototypes */
@@ -72,48 +72,6 @@ int cc110x_setup(cc110x_t *dev, const cc110x_params_t *params)
 
     /* Write configuration to configuration registers */
    cc110x_writeburst_reg(dev, 0x00, cc110x_default_conf, cc110x_default_conf_size);
-   
-   /*
-    cc110x_write_reg(dev,CC110X_IOCFG2,0x06);
-    cc110x_write_reg(dev,CC110X_IOCFG1,0x2E);
-    cc110x_write_reg(dev,CC110X_IOCFG0,0x0E);
-    cc110x_write_reg(dev,CC110X_FIFOTHR,0x07);
-    cc110x_write_reg(dev,CC110X_SYNC1,0x9B);
-    cc110x_write_reg(dev,CC110X_SYNC0,0xAD);
-    cc110x_write_reg(dev,CC110X_PKTLEN,0xFF);
-    cc110x_write_reg(dev,CC110X_PKTCTRL1,0x06);
-    cc110x_write_reg(dev,CC110X_PKTCTRL0,0x45);
-    cc110x_write_reg(dev,CC110X_ADDR,0xFF);
-    cc110x_write_reg(dev,CC110X_CHANNR,0x00);
-    cc110x_write_reg(dev,CC110X_FSCTRL1,0x0F);
-    cc110x_write_reg(dev,CC110X_FSCTRL0,0x00);
-    cc110x_write_reg(dev,CC110X_FREQ2,0x21);
-    cc110x_write_reg(dev,CC110X_FREQ1,0x71);
-    cc110x_write_reg(dev,CC110X_FREQ0,0x7A);
-    cc110x_write_reg(dev,CC110X_MDMCFG4,0x7C);
-    cc110x_write_reg(dev,CC110X_MDMCFG3,0x7A);
-    cc110x_write_reg(dev,CC110X_MDMCFG2,0x06);
-    cc110x_write_reg(dev,CC110X_MDMCFG1,0xC0);
-    cc110x_write_reg(dev,CC110X_MDMCFG0,0xF8);
-    cc110x_write_reg(dev,CC110X_DEVIATN,0x44);
-    cc110x_write_reg(dev,CC110X_MCSM2,0x07);
-    cc110x_write_reg(dev,CC110X_MCSM1,0x03);
-    cc110x_write_reg(dev,CC110X_MCSM0,0x18);
-    cc110x_write_reg(dev,CC110X_FOCCFG,0x16);
-    cc110x_write_reg(dev,CC110X_BSCFG,0x6C);
-    cc110x_write_reg(dev,CC110X_AGCCTRL2,0x45);
-    cc110x_write_reg(dev,CC110X_AGCCTRL1,0x40);
-    cc110x_write_reg(dev,CC110X_AGCCTRL0,0x91);
-    cc110x_write_reg(dev,CC110X_WOREVT1,0x87);
-    cc110x_write_reg(dev,CC110X_WOREVT0,0x6B);
-    cc110x_write_reg(dev,CC110X_WORCTRL,0xF8);
-    cc110x_write_reg(dev,CC110X_FREND1,0x56);
-    cc110x_write_reg(dev,CC110X_FREND0,0x17);
-    cc110x_write_reg(dev,CC110X_FSCAL3,0xEA);
-    cc110x_write_reg(dev,CC110X_FSCAL2,0x2A);
-    cc110x_write_reg(dev,CC110X_FSCAL1,0x00);
-    cc110x_write_reg(dev,CC110X_FSCAL0,0x1F);
-*/
 
     /* Write PATABLE (power settings) */
     cc110x_writeburst_reg(dev, CC110X_PATABLE, CC110X_DEFAULT_PATABLE, 8);
