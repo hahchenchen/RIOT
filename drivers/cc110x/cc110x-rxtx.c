@@ -167,6 +167,7 @@ static void _tx_continue(cc110x_t *dev)
     cc110x_pkt_t *pkt = &dev->pkt_buf.packet;
     int size = pkt->length + 1;
     int left = size - dev->pkt_buf.pos;
+
     if (!left) {
         dev->cc110x_statistic.raw_packets_out++;
 
@@ -175,7 +176,9 @@ static void _tx_continue(cc110x_t *dev)
         cc110x_switch_to_rx(dev);
         return;
     }
+
     int fifo = 64 - cc110x_get_reg_robust(dev, 0xfa);
+
     if (fifo & 0x80) {
         DEBUG("%s:%s:%u tx underflow!\n", RIOT_FILE_RELATIVE, __func__, __LINE__);
         _tx_abort(dev);
@@ -189,9 +192,11 @@ static void _tx_continue(cc110x_t *dev)
     }
 
     int to_send = left > fifo ? fifo : left;
+
     /* Write packet into TX FIFO */
     cc110x_writeburst_reg(dev, CC110X_TXFIFO, ((char *)pkt)+dev->pkt_buf.pos, to_send);
     dev->pkt_buf.pos += to_send;
+
     if (left == size) {
         /* Switch to TX mode */
         cc110x_strobe(dev, CC110X_STX);
@@ -207,7 +212,6 @@ static void _tx_continue(cc110x_t *dev)
         cc110x_write_reg(dev, CC110X_IOCFG2, 0x06);
         gpio_irq_enable(dev->params.gdo2);
     }
-
 }
 
 void cc110x_isr_handler(cc110x_t *dev, void(*callback)(void*), void*arg)
@@ -249,7 +253,7 @@ int cc110x_send(cc110x_t *dev, cc110x_pkt_t *packet)
         case RADIO_RX_BUSY:
         case RADIO_TX_BUSY:
             DEBUG("cc110x: invalid state for sending: %s\n",
-                    dev->radio_state==RADIO_RX_BUSY?"RADIO_RX_BUSY":"RADIO_TX_BUSY");
+                    (dev->radio_state)==RADIO_RX_BUSY?"RADIO_RX_BUSY":"RADIO_TX_BUSY");
             return -EAGAIN;
     }
 
@@ -265,6 +269,7 @@ int cc110x_send(cc110x_t *dev, cc110x_pkt_t *packet)
                 RIOT_FILE_RELATIVE, __func__, __LINE__);
         return -ENOSPC;
     }
+
     /* set source address */
     packet->phy_src = dev->radio_address;
 
@@ -275,9 +280,9 @@ int cc110x_send(cc110x_t *dev, cc110x_pkt_t *packet)
 #ifdef MODULE_CC110X_HOOKS
     cc110x_hook_tx();
 #endif
-printf("CC110X_VERSION:%x\n",cc110x_read_status(dev,0x29));
 
     cc110x_write_reg(dev, CC110X_IOCFG2, 0x02);
+
     /* Put CC110x in IDLE mode to flush the FIFO */
     cc110x_strobe(dev, CC110X_SIDLE);
     /* Flush TX FIFO to be sure it is empty */
