@@ -26,7 +26,7 @@
 
 #define BUF_SIZE (64)
 
-#define MAX_ADDR_LEN            (8U)
+#define MAX_ADDR_LEN            (1U)
 
 static unsigned char _int_buf[BUF_SIZE];
 static unsigned char _cont_buf[BUF_SIZE];

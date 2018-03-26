@@ -35,7 +35,7 @@
 #include "xtimer.h"
 #include "irq.h"
 
-#define SPI_CLK         SPI_CLK_10MHZ
+#define SPI_CLK         SPI_CLK_5MHZ
 #define SPI_MODE        SPI_MODE_0
 
 /**********************************************************************
