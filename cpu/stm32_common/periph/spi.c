@@ -90,7 +90,7 @@ void spi_init_pins(spi_t bus)
 }
 
 int spi_init_cs(spi_t bus, spi_cs_t cs)
-{printf("spi_init_cs\n");
+{
     if (bus >= SPI_NUMOF) {
         return SPI_NODEV;
     }
@@ -135,7 +135,7 @@ int     spi_acquire(spi_t bus, spi_cs_t cs, spi_mode_t mode, spi_clk_t clk)
     else {
         dev(bus)->CR2 |= (SPI_CR2_SSOE);
     }
- gpio_clear((gpio_t)cs);
+// gpio_clear((gpio_t)cs);
     return SPI_OK;
 }
 

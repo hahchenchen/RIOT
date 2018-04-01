@@ -69,11 +69,9 @@ static int _send(gnrc_netdev_t *gnrc_netdev, gnrc_pktsnip_t *pkt)
 #endif
 #ifdef MODULE_CCN_LITE
         case GNRC_NETTYPE_CCN:
-        printf("GNRC_NETTYPE_CCN\n");
             cc110x_pkt.flags = 1;
             break;
         case GNRC_NETTYPE_CCN_CHUNK:
-        printf("GNRC_NETTYPE_CCN_CHUNK\n");
             cc110x_pkt.flags = 2;
             break;
 #endif
@@ -138,12 +136,10 @@ static gnrc_pktsnip_t *_recv(gnrc_netdev_t *gnrc_netdev)
 #endif
 #ifdef MODULE_CCN_LITE
         case 1:
-        printf("case 1\n");
             addr_len = 1;
             nettype = GNRC_NETTYPE_CCN;
             break;
         case 2:
-        printf("case 2:\n");
             addr_len = 1;
             nettype = GNRC_NETTYPE_CCN_CHUNK;
             break;
