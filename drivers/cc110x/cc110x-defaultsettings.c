@@ -40,7 +40,8 @@ const char cc110x_default_pa_table[8] = {
     0xC3    /*< +10 dBm */
 };
 
-const char cc110x_default_base_freq[3] = { 0x21, 0x71, 0x7F };
+//const char cc110x_default_base_freq[3] = { 0x21, 0x71, 0x7F };
+const char cc110x_default_base_freq[3] = { 0x10, 0xA7, 0x62 };
 
 /**
  * @brief cc110x default settings
@@ -68,12 +69,21 @@ const char cc110x_default_conf[] = {
     0x21, /* FREQ2 */
     0x71, /* FREQ1 */
     0x7A, /* FREQ0 */
+  //  0x10, /* FREQ2 */
+  //  0xA7, /* FREQ1 */
+  //  0x62, /* FREQ0 */    
     0x7C, /* MDMCFG4 */
     0x7A, /* MDMCFG3 */
+  //  0x5B, /* MDMCFG4 */
+  //  0xF8, /* MDMCFG3 */    
     0x06, /* MDMCFG2 */
     0xC0, /* MDMCFG1 */
     0xF8, /* MDMCFG0 */
+   // 0x03, /* MDMCFG2 */
+    //0x22, /* MDMCFG1 */
+   // 0xF8, /* MDMCFG0 */
     0x44, /* DEVIATN */
+   // 0x47, /* DEVIATN */
     0x07, /* MCSM2 */
     0x03, /* MCSM1 */
     0x18, /* MCSM0 */

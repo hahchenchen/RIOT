@@ -160,6 +160,8 @@ void cc110x_set_base_freq_raw(cc110x_t *dev, const char* freq_array)
     DEBUG("cc110x_set_base_freq_raw(): setting base frequency to %uHz\n",
             (26000000>>16) * (unsigned)(*FREQ));
 #endif
+//    printf("cc110x_set_base_freq_raw(): setting base frequency to %uHz\n",
+  //          (26000000>>16) * (unsigned)(*FREQ));
     cc110x_writeburst_reg(dev, CC110X_FREQ2, freq_array, 3);
 }
 

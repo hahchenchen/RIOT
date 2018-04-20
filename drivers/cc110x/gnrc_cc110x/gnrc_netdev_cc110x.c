@@ -70,9 +70,11 @@ static int _send(gnrc_netdev_t *gnrc_netdev, gnrc_pktsnip_t *pkt)
 #ifdef MODULE_CCN_LITE
         case GNRC_NETTYPE_CCN:
             cc110x_pkt.flags = 1;
+            printf("send\n");
             break;
         case GNRC_NETTYPE_CCN_CHUNK:
             cc110x_pkt.flags = 2;
+            printf("send chunk\n");
             break;
 #endif
         default:
@@ -106,7 +108,7 @@ static int _send(gnrc_netdev_t *gnrc_netdev, gnrc_pktsnip_t *pkt)
 
     cc110x_pkt.length = (uint8_t) payload_len + CC110X_HEADER_LENGTH;
 
-    DEBUG("gnrc_netdev_cc110x: sending packet from %u to %u with payload "
+    printf("gnrc_netdev_cc110x: sending packet from %u to %u with payload "
             "length %u\n",
             (unsigned)cc110x_pkt.phy_src,
             (unsigned)cc110x_pkt.address,
@@ -138,10 +140,12 @@ static gnrc_pktsnip_t *_recv(gnrc_netdev_t *gnrc_netdev)
         case 1:
             addr_len = 1;
             nettype = GNRC_NETTYPE_CCN;
+            printf("recv\n");
             break;
         case 2:
             addr_len = 1;
             nettype = GNRC_NETTYPE_CCN_CHUNK;
+            printf("recv chunk\n");
             break;
 #endif
         default:
@@ -186,7 +190,7 @@ static gnrc_pktsnip_t *_recv(gnrc_netdev_t *gnrc_netdev)
     ((gnrc_netif_hdr_t *)netif_hdr->data)->lqi = cc110x->pkt_buf.lqi;
     ((gnrc_netif_hdr_t *)netif_hdr->data)->rssi = cc110x->pkt_buf.rssi;
 
-    DEBUG("gnrc_netdev_cc110x: received packet from %02x"
+    printf("gnrc_netdev_cc110x: received packet from %02x"
             " of length %u\n",
             (unsigned)cc110x_pkt->phy_src,
             (unsigned)cc110x_pkt->length-CC110X_HEADER_LENGTH);
