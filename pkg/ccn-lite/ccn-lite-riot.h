@@ -295,6 +295,9 @@ void ccnl_set_local_producer(ccnl_producer_func func);
  */
 void ccnl_set_cache_strategy_remove(ccnl_cache_strategy_func func);
 
+int send_interest(char *pfx);
+extern unsigned char _cont_buf[64];
+
 #ifdef __cplusplus
 }
 #endif

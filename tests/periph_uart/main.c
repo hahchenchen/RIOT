@@ -50,6 +50,10 @@ static uart_ctx_t ctx[UART_NUMOF];
 static kernel_pid_t printer_pid;
 static char printer_stack[THREAD_STACKSIZE_MAIN];
 
+   unsigned char temp_buf[45]={0x06,0x2b,0x07,0x16,0x08,0x03,0x6e,0x64,0x6e,0x08,0x04,0x74,0x65,0x73,0x74,0x08,0x09,0x6d,
+                         0x79,0x63,0x6f,0x6e,0x74,0x65,0x6e,0x74,0x14,0x00,0x15,0x06,0x68,0x65,0x6c,0x6c,0x6f,0x0a,0x16,0x05,0x1b,0x01,0x00,0x1c,0x00,0x17,0x00};
+
+
 static int parse_dev(char *arg)
 {
     unsigned dev = atoi(arg);
@@ -69,7 +73,7 @@ static void rx_cb(void *arg, uint8_t data)
     uart_t dev = (uart_t)arg;
 
     ringbuffer_add_one(&(ctx[dev].rx_buf), data);
-    if (data == '\n') {
+    if (data == '\0') {
         msg_t msg;
         msg.content.value = (uint32_t)dev;
         msg_send(&msg, printer_pid);
@@ -83,12 +87,15 @@ static void *printer(void *arg)
     msg_t msg_queue[8];
     msg_init_queue(msg_queue, 8);
 
+  //  uint8_t endline = (uint8_t)'\n';
+
     while (1) {
         msg_receive(&msg);
         uart_t dev = (uart_t)msg.content.value;
-        char c;
-
+       // char c;
+        char buf[1024];
         printf("UART_DEV(%i) RX: ", dev);
+        /*
         do {
             c = (int)ringbuffer_get_one(&(ctx[dev].rx_buf));
             if (c == '\n') {
@@ -101,6 +108,13 @@ static void *printer(void *arg)
                 printf("0x%02x", (unsigned char)c);
             }
         } while (c != '\n');
+        */
+        ringbuffer_get(&(ctx[dev].rx_buf), buf,1024);
+
+        printf("buf:%s\n",buf );
+        //uart_write(UART_DEV(dev), (uint8_t *)buf, strlen(buf));
+        // uart_write(UART_DEV(dev), &endline, 1);
+
     }
 
     /* this should never be reached */
@@ -151,9 +165,10 @@ static int cmd_send(int argc, char **argv)
     if (dev < 0) {
         return 1;
     }
+    
 
     printf("UART_DEV(%i) TX: %s\n", dev, argv[2]);
-    uart_write(UART_DEV(dev), (uint8_t *)argv[2], strlen(argv[2]));
+    uart_write(UART_DEV(dev), (uint8_t *)temp_buf, sizeof(temp_buf));
     uart_write(UART_DEV(dev), &endline, 1);
     return 0;
 }
@@ -190,7 +205,6 @@ int main(void)
     /* start the printer thread */
     printer_pid = thread_create(printer_stack, sizeof(printer_stack),
                                 PRINTER_PRIO, 0, printer, NULL, "printer");
-
     /* run the shell */
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
